@@ -136,3 +136,4 @@ We selected China, the United States, and Germany for analysis in the Summer Oly
 ![image-20250302134618920](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031426999.png)
 
 The XG-S-R model remains stable in low-noise environments (standard deviation <0.2), with controlled error increases. In high-noise environments, maintaining stability is achievable by enhancing the data-cleaning process.
+
