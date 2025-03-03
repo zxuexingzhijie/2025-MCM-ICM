@@ -1,151 +1,138 @@
-# 2025-MCM-ICM
-2025美赛c题 "奥运奖牌预测模型" 代码及其部分思路
+[中文版]: README_zh.md
 
-### 对于奥运奖牌预测模型，想法如下:
+### 2025 MCM Problem C: 
 
-* ***\*主模型：XGBoost模型\****  我们利用这种梯度提升树的算法，迭代地训练一系列弱学习器（决策树），将他们组合成一个强学习器，处理静态特征和简单的时序特征，并通过调参评估，作为我们的主模型去预测奖牌数量以及首次得奖的概率
+### "Olympic Medal Prediction Model" Code and Partial Thought Process
 
-  ![image-20250302132328851](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021323930.png)
+#### For the Olympic medal prediction model, our ideas are as follows:
 
-  ***\*子模型一：SVR模型\**** 我们通过最小化目标建立了一个平滑的回归函数，与我们的主模型结合，对历史数据较少且特征维度适中的国家（比如荷兰、芬兰等），进行了奖牌的预测，同时分析了运动项目增减对奖牌分布的非线性影响。
+- ***Main Model: XGBoost Model***
+   We utilize this gradient boosting tree algorithm to iteratively train a series of weak learners (decision trees) and combine them into a strong learner. This approach handles static features and simple temporal features. By tuning hyperparameters and evaluating the model, we use it as our main model to predict the number of medals and the probability of winning a medal for the first time.
 
-  ![image-20250302132340935](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021323969.png)
+![image-20250302132328851](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031418321.png)
 
-  ***\*子模型二：随机森林模型\****  利用自助方法和随机特征选择生成了多棵决策树，并利用多棵决策树的结果进行平均，通过分析随机森林中赛事相关特征的重要性，探究了不同赛事与各国所获的奖牌数量的关系
+- ***Submodel 1: SVR Model***
+   We established a smooth regression function by minimizing the objective function. Combined with our main model, this approach was used to predict medals for countries with limited historical data and moderate feature dimensions (such as the Netherlands and Finland). Additionally, we analyzed the nonlinear impact of changes in the number of sports events on medal distribution.
 
-  ![image-20250302132540645](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021325782.png)
+![image-20250302132340935](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031419397.png)
 
-### 预测模型具体流程
+- ***Submodel 2: Random Forest Model***
+   We used the bootstrap method and random feature selection to generate multiple decision trees and averaged their results. By analyzing the importance of event-related features within the random forest model, we explored the relationship between different events and the number of medals won by various countries.
 
-![image-20250302132051836](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021320918.png)
+![image-20250302132540645](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031419715.png)
 
-### 数据预处理部分:
+#### Prediction Model Workflow
 
-![image-20250302132723521](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021327564.png)
+![image-20250302132051836](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031419550.png)
 
-![image-20250302132731319](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021327363.png)
+#### Data preprocessing component
 
-![image-20250302132737244](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021327285.png)
+![image-20250302132723521](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031419727.png)
 
-![image-20250302132745675](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021327724.png)
+![image-20250302132731319](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031420320.png)
 
+![image-20250302132737244](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031420379.png)
 
+![image-20250302132745675](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031420916.png)
 
+### Model Results:
 
+- #### Medal Count Prediction
 
-### 模型结果：
+By constructing analytical feature indicators and preprocessing historical data, our trained XG-S-R model generated medal count predictions for various countries and regions in future Olympic Games. Here, we present the countries that rank among the top in medal counts. Similarly...
 
-* #### 奖牌数预测
+![image-20250302132814818](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031420685.png)
 
-通过构建分析指标特征和预处理历史数据，我们训练的XG-S-R模型生成了未来奥运会各国家和地区的奖牌预测数。在这里我们展示获得奖牌数量位居前列的国家
+- #### Analysis of Changes in Medal Performance
 
-![image-20250302132814818](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021328926.png)
+From the chart, we can see that countries such as the United States, China, and the United Kingdom are most likely to make progress, with China and the United States showing significantly greater improvements compared to other countries. On the other hand, countries or independent athletes with weaker performances, such as some independent athletes, Hungary, and Australia, are expected to perform worse than in 2024.
 
-* #### 奖牌表现变化分析
+![image-20250302132931536](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031421278.png)
 
-从图中可以看出，美国和中国以及英国等这些国家最有可能取得进步，其中中国和美国进步的程度远远领先于其他国家；而表现较为不好的国家（或独立运动员），也就是一些独立运动员、匈牙利、澳大利亚等国家的表现将不如2024年。
+![image-20250302132937933](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031421867.png)
 
-![image-20250302132931536](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021329584.png)
+### Prediction of New Medal-Winning Countries
 
-![image-20250302132937933](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021329984.png)
+The chart presents the top 10 countries most likely to win their first gold medal. The top three—Afghanistan, North Macedonia, and the Republic of Niger—each have a probability exceeding 60%. The other countries also have a probability of over 50% of winning their first gold medal.
 
-### 新获奖国家预测
+![image-20250302133127449](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031421491.png)
 
-图中我们给出了前10最有可能获得首枚金牌的国家，前三位概率超过60%，分别是阿富汗、北马其顿、尼日尔共和国。其他国家也都具有超50%的概率获得首枚金牌。
+#### Analysis of the Impact of Olympic Event Settings
 
+We solved the correlation matrix and visualized it using a correlation heatmap.
 
+1. **Relationship Between the Total Number of Events and Medal Counts**: The correlation coefficients between the total number of events and gold, silver, bronze, and total medal counts are all close to zero. This indicates that changes in the number of Olympic events have almost no direct impact on the number of medals won by different countries.
+2. **High Correlation Among Medal Types**: There is a strong positive correlation (correlation coefficient: 0.88–0.92) among gold, silver, and bronze medals. This suggests that a country’s strength in one type of medal is usually accompanied by strength in others, reflecting its overall competitive capability.
+3. **Key Drivers of Total Medal Count**: The total number of medals is highly correlated with gold, silver, and bronze counts (correlation coefficient: 0.96–0.97). Gold and silver medals contribute the most to the total medal count, indicating that a country's overall performance is determined by its results across different medal types.
 
-![image-20250302133127449](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021331485.png)
+In summary, the distribution of Olympic medals is primarily related to a country’s overall competitive strength rather than the total number of events. Additionally, there is a strong synergy between different medal types and the total medal count, reinforcing the "strong-get-stronger" effect.
 
-#### 奥运项目设置影响分析
+![image-20250302133203266](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031422657.png)
 
-我们通过求解相关性矩阵，绘制了相关性热图
+#### Exploration of the host country effect
 
-1.总项目数与奖牌数的关系：总项目数与金、银、铜牌以及总奖牌数的相关系数均接近零，表明奥运会项目数量的增减对各国奖牌获得数几乎没有直接影响
+![image-20250302133221650](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031422246.png)
 
-2.奖牌类型之间的高度相关性：金牌、银牌、铜牌三者之间呈现极强的正相关（相关系数0.88-0.92）。这表明一个国家在某一奖牌类型上的优势通常伴随着其他奖牌类型的优势，反映其整体竞技实力。
+![image-20250302133226148](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031422829.png)
 
-3.总奖牌数的驱动因素：总奖牌数与金、银、铜牌的相关系数极高（0.96-0.97），尤其是金牌和银牌对总奖牌数的贡献最大，说明总奖牌数主要由各单项奖牌表现共同决定
+From the analysis of these two charts, we can conclude the following:
 
-也就是说，奥运会奖牌数的分布主要与国家的综合竞技实力相关，而非赛事项目总数；各奖牌类型及总奖牌数之间存在强协同效应，体现“强者恒强”的特点
+- **The host country has a significant medal advantage in the hosting year**: As shown in Figure 15, the total number of medals won by the host country is significantly higher in hosting years compared to non-hosting years. This suggests that host countries may benefit from home advantage, leading to more medal wins.
+- **The gap between host and non-host countries may widen**: In Figure 14, the medal count curve for host countries shows distinct peaks in hosting years (e.g., 1900, 1920), whereas the curve for non-host countries remains relatively stable. This indicates that the advantage of host countries might become more pronounced over time.
 
+Through this visualization analysis, we can conclude that being the host country does indeed impact the number of medals won. Hosting the Olympics increases the probability of athletes winning medals and enhances the overall medal count for the country.
 
 
-![image-20250302133203266](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021332315.png)
 
-#### 主办国效应的探究
+#### An Exploration of the Great Coach Effect and Its Olympic Suggestions
 
-![image-20250302133221650](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021332685.png)
+![image-20250302133842575](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031423934.png)
 
-![image-20250302133226148](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021332180.png)
+![image-20250302133849498](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031423000.png)
 
-从这两张图中我们分析可知：
+![image-20250302133857605](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031423802.png)
 
-* 东道国在举办年份的奖牌优势显著：图15显示，东道国年份的奖牌总数远高于非东道国年份。表明东道国可能因为主场优势获得更多奖牌。
-* 东道国与非东道国的差距可能扩大：图14中，东道国的奖牌数曲线在举办年份（如1900、1920等）出现明显峰值，而非东道国曲线相对平缓，说明东道国的优势随着时代发展可能会进一步强化。
+![image-20250302133903058](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031423212.png)
 
-通过可视化分析我们可以得出，是否主办国确实会对获得奖牌的数量造成影响，使得运动员得奖概率一定程度上提高，也使得国家奖牌数量提高。
+![image-20250302133912623](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031423573.png)
 
-#### 伟大教练效应探究及其奥运会建议
+![image-20250302133919643](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031424744.png)
 
-![image-20250302133842575](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021338626.png)
+We selected China, the United States, and Germany for analysis in the Summer Olympic Games, visualizing their athlete data, including participation in different sports, medal achievements, and medal efficiency.
 
-![image-20250302133849498](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021338548.png)
+### (1) Data Comparison and Analysis
 
-![image-20250302133857605](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021338648.png)
+- **Dominant Sports by Country**: China excels in table tennis, diving, and gymnastics, with table tennis achieving a remarkable medal efficiency of 2.26 medals per athlete. Denmark has a strong advantage in athletics and swimming, with a high number of medals and athlete participation. Germany shows competitive strength in rowing, field hockey, and equestrian events, with rowing exhibiting particularly high medal efficiency.
+- **Athlete Participation and Medal Achievements**: Denmark has a higher number of participating athletes across multiple sports and secures a significant number of medals. China and Germany have concentrated advantages in specific sports, with relatively lower participation and medal counts in certain events.
+- **Differences in Medal Efficiency**: Medal efficiency varies significantly across different sports for each country. China achieves high efficiency in diving and table tennis, while some ball sports have lower efficiency. Denmark's swimming efficiency reaches 1.576471, but some niche sports show zero efficiency. Germany's canoeing and equestrian events have high efficiency, whereas some team sports perform less efficiently. These differences reflect varying levels of development and resource allocation among countries.
 
-![image-20250302133903058](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021339101.png)
+### (2) "Great Coach" Effect and Recommendations
 
-![image-20250302133912623](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021339670.png)
+- **Effect Demonstration**: Based on the model, hiring elite coaches leads to an average increase of 1.1 medals per Olympic cycle for technical individual sports and 1.8 medals for team sports. This effect is evident in all three countries analyzed. For instance, China's gymnastics, the U.S. shooting, and Germany’s canoeing have shown medal increases with coaching improvements. In team sports, China’s women's volleyball, Denmark’s women's volleyball, and Germany’s men's handball have also benefited from the "great coach" effect.
+- **Investment Priority Considerations**: Among the three countries, team sports tend to receive higher investment priority due to their larger potential medal increase (1.8 medals per Olympic cycle). Sports like women's volleyball and men's handball are prime examples. In technical individual events, disciplines with strong potential but not yet at the highest efficiency—such as China’s gymnastics and Germany’s canoeing—also hold high investment value. While endurance-based sports have a lower effect coefficient, their large athlete base provides room for improvement, though they generally rank lower in investment priority.
 
-![image-20250302133919643](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021339694.png)
+#### Comparison with the Ridge Model:
 
-我们在夏季奥运会赛事选取了中国、美国、德国三个国家，对其运动员数据，包括每个国家不同体育项目的运动员参与情况、奖牌获得情况以及奖牌效率，进行了可视化的处理。
+- ##### Ridge Model Fit:
 
-（1）数据对比与分析：
+![image-20250302134330727](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031425726.png)
 
-* 各国优势运动项目：中国在乒乓球、跳水、体操等项目上表现突出，乒乓球的奖牌效率极高，达到 2.26 枚奖牌 / 运动员；丹麦在田径、游泳项目上优势明显，奖牌数量多且运动员参与人数众多；德国在赛艇、曲棍球、马术等项目上具备较强竞争力，如赛艇项目的奖牌效率较高。
+##### ![image-20250302134306639](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031425085.png) XG-S-R Model Fit:
 
-* 运动员参与度和奖牌获取情况：丹麦参与运动项目的运动员人数整体较多，在多个项目上都有大量运动员参与并获得不少奖牌；中国和德国在运动员参与数量和奖牌获取方面，各有其集中的优势项目，在一些项目上参与人数和奖牌数相对较少。
+![image-20250302134415547](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031426495.png)
 
-* 奖牌效率差异：各国不同项目的奖牌效率差异较大。中国的跳水、乒乓球等项目效率高，而部分球类项目效率较低；丹麦游泳项目效率高达 1.576471，在一些小众项目上效率为 0；德国的皮划艇、马术等项目效率较高，部分球类项目效率低。这反映出各国在不同项目上的发展水平和资源投入效果不同。
-  (2)“伟大教练”效应及建议
+![image-20250302134423843](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031426935.png)
 
-* 效应体现：根据模型，技术型个人项目引进教练每届增加 1.1 枚奖牌，团队项目增加 1.8 枚奖牌。在三国分析中均体现了这一效应的应用，如中国体操、美国射击、德国皮划艇等技术型个人项目，以及中国女排、丹麦女排、德国男子手球等团队项目，都预期在引入优秀教练后奖牌数有所增加。
+- The Ridge model performs well on certain samples but exhibits systematic bias, underestimating high medal counts and overestimating low medal counts.
+- The XG-S-R model demonstrates overall strong predictive performance on the data.
 
-* 投资项目优先级综合考量：综合三国情况，团队项目由于其较大的奖牌提升幅度（每届增加 1.8 枚奖牌），在投资优先级上普遍较高，如女排、男子手球等项目。技术型个人项目中，那些效率未达顶尖且有发展潜力的项目，如中国体操、德国皮划艇，也具有较高投资价值。体能型项目虽效应系数较低，但凭借较大的运动员基数，也有一定提升空间，不过整体优先级相对靠后。
+| Model Name   | MAE (Gold) | R² (Gold) | MAE (Total) | R² (Total) |
+| ------------ | ---------- | --------- | ----------- | ---------- |
+| XG-S-R Model | 1.03       | 0.86      | 3.91        | 0.81       |
+| Ridge Model  | 49.29      | 0.49      | 333.88      | 0.48       |
 
+### Model Evaluation
 
+![image-20250302134618920](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503031426999.png)
 
-
-
-#### 与Ridge模型的对比：
-
-* ##### Ridge模型拟合度：
-
-![image-20250302134330727](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021343874.png)
-
-![image-20250302134306639](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021343787.png)
-
-* ##### XG-S-R模型拟合度
-
-![image-20250302134415547](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021344648.png)
-
-![image-20250302134423843](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021344996.png)
-
-* Ridge模型部分样本表现较好，但是系统性偏差明显，高奖牌数低估，低奖牌数高估
-
-* XG-S-R整体对数据的预测表现良好
-
-| 名称       | MAE(Gold) | R2(Gold) | MAE(Total) | R2(Total) |
-| ---------- | --------- | -------- | ---------- | --------- |
-| XG-S-R模型 | 1.03      | 0.86     | 3.91       | 0.81      |
-| Ridge模型  | 49.29     | 0.49     | 333.88     | 0.48      |
-
-
-
-### 模型评估
-
-![image-20250302134618920](https://typora-oss-picgo.oss-cn-beijing.aliyuncs.com/202503021346026.png)
-
-* XG-S-R模型在低噪声（<0.2标准差）环境下表现稳定，误差增幅可控，高噪声环境我们只需增加数据清洗环节就也能保持一定的稳定性。
+The XG-S-R model remains stable in low-noise environments (standard deviation <0.2), with controlled error increases. In high-noise environments, maintaining stability is achievable by enhancing the data-cleaning process.
