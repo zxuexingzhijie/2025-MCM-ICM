@@ -1,7 +1,6 @@
-[中文版]: README_zh.md
 
 ### 2025 MCM Problem C: 
-
+[中文版]: README_zh.md
 ### "Olympic Medal Prediction Model" Code and Partial Thought Process
 
 #### For the Olympic medal prediction model, our ideas are as follows:
